@@ -202,7 +202,7 @@ public class OntologyChangeRecordList implements TimeStampedMetadataChunk {
      */
     private Set<OWLEntity> getChangeSignature() {
         Set<OWLEntity> result = new HashSet<OWLEntity>();
-        final OWLOntologyChangeDataVisitor<Set<OWLEntity>, RuntimeException> visitor = new OWLOntologyChangeDataVisitor<Set<OWLEntity>, RuntimeException>() {
+        final OWLOntologyChangeDataVisitor<Set<OWLEntity>> visitor = new OWLOntologyChangeDataVisitor<Set<OWLEntity>>() {
             @Override
             public Set<OWLEntity> visit(AddAxiomData data) throws RuntimeException {
                 return data.getAxiom().getSignature();

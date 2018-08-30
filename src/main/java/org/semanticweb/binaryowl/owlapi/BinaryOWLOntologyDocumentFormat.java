@@ -72,7 +72,6 @@ public class BinaryOWLOntologyDocumentFormat extends OWLDocumentFormatImpl {
         return "Binary OWL Ontology Document";
     }
 
-    @Override
     public boolean isPrefixOWLOntologyFormat() {
         return false;
     }
@@ -83,7 +82,6 @@ public class BinaryOWLOntologyDocumentFormat extends OWLDocumentFormatImpl {
     }
 
     @Nonnull
-    @Override
     public PrefixDocumentFormat asPrefixOWLOntologyFormat() {
         throw new ClassCastException("BinaryOWLOntologyDocumentFormat is not a prefix format");
     }

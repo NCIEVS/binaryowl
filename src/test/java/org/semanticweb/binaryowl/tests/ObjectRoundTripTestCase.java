@@ -604,7 +604,7 @@ public class ObjectRoundTripTestCase {
         roundTrip(ont);
 
         // IRI + Version IRI
-        man.applyChange(new SetOntologyID(ont, new OWLOntologyID(Optional.of(A.getIRI()), Optional.of(B.getIRI()))));
+        man.applyChange(new SetOntologyID(ont, new OWLOntologyID(A.getIRI(), B.getIRI())));
         roundTrip(ont);
     }
 

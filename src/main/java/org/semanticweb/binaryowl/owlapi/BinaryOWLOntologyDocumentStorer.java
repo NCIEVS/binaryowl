@@ -63,7 +63,7 @@ public class BinaryOWLOntologyDocumentStorer implements OWLStorer {
     @Override
     public void storeOntology(@Nonnull OWLOntology ontology, @Nonnull IRI documentIRI, @Nonnull OWLDocumentFormat format) throws OWLOntologyStorageException, IOException {
         URI uri = documentIRI.toURI();
-        if(!uri.isAbsolute()) {
+        if (!uri.isAbsolute()) {
             throw new OWLOntologyStorageException("Document IRI is not absolute: " + documentIRI);
         }
         File file = new File(uri);
@@ -72,8 +72,8 @@ public class BinaryOWLOntologyDocumentStorer implements OWLStorer {
 
     @Override
     public void storeOntology(@Nonnull OWLOntology ontology, @Nonnull OWLOntologyDocumentTarget target, @Nonnull OWLDocumentFormat format) throws OWLOntologyStorageException, IOException {
-        if(target.isOutputStreamAvailable()) {
-            storeOntology(ontology, new BufferedOutputStream(target.getOutputStream()));
+        if (target.getOutputStream().isPresent()) {
+            storeOntology(ontology, new BufferedOutputStream(target.getOutputStream().get()));
         }
         else {
             throw new OWLOntologyStorageException("Unsupported target type");

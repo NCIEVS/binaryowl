@@ -19,7 +19,7 @@ import java.util.Set;
  * Bio-Medical Informatics Research Group<br>
  * Date: 26/04/2013
  */
-public class BinaryOWLOntologyBuildingHandler implements BinaryOWLOntologyDocumentHandler<BinaryOWLParseException>, OWLOntologyChangeDataVisitor<Void, RuntimeException> {
+public class BinaryOWLOntologyBuildingHandler implements BinaryOWLOntologyDocumentHandler<BinaryOWLParseException>, OWLOntologyChangeDataVisitor<Void> {
 
     private OWLOntologyLoaderConfiguration loaderConfiguration;
 

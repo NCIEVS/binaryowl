@@ -95,10 +95,10 @@ public class OWLOntologySerializer extends OWLObjectSerializer<OWLOntology> {
             }
             else {
                 if(versionIRI.isEmpty()) {
-                    id = new OWLOntologyID(Optional.of(IRI.create(ontologyIRI)), Optional.<IRI>absent());
+                    id = new OWLOntologyID(IRI.create(ontologyIRI));
                 }
                 else {
-                    id = new OWLOntologyID(Optional.of(IRI.create(ontologyIRI)), Optional.of(IRI.create(versionIRI)));
+                    id = new OWLOntologyID(IRI.create(ontologyIRI), IRI.create(versionIRI));
                 }
             }
 

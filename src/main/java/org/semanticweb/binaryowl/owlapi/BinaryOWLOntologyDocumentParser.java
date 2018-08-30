@@ -39,17 +39,24 @@
 
 package org.semanticweb.binaryowl.owlapi;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+
+import javax.annotation.Nonnull;
+
 import org.semanticweb.binaryowl.BinaryOWLOntologyDocumentSerializer;
 import org.semanticweb.binaryowl.BinaryOWLParseException;
 import org.semanticweb.owlapi.io.OWLOntologyDocumentSource;
 import org.semanticweb.owlapi.io.OWLParser;
-import org.semanticweb.owlapi.io.OWLParserException;
-import org.semanticweb.owlapi.model.*;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLDocumentFormat;
+import org.semanticweb.owlapi.model.OWLDocumentFormatFactory;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyLoaderConfiguration;
+import org.semanticweb.owlapi.model.UnloadableImportException;
 import org.semanticweb.owlapi.util.OWLDocumentFormatFactoryImpl;
-
-import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Author: Matthew Horridge<br>
@@ -60,7 +67,12 @@ import java.io.InputStream;
 public class BinaryOWLOntologyDocumentParser implements OWLParser {
 
 
-    @Nonnull
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Nonnull
     @Override
     public String getName() {
         return "Binary OWL";
@@ -69,7 +81,12 @@ public class BinaryOWLOntologyDocumentParser implements OWLParser {
     @Override
     public OWLDocumentFormatFactory getSupportedFormat() {
         return new OWLDocumentFormatFactoryImpl() {
-            @Override
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public OWLDocumentFormat createFormat() {
                 return new BinaryOWLOntologyDocumentFormat();
             }
@@ -78,33 +95,67 @@ public class BinaryOWLOntologyDocumentParser implements OWLParser {
 
     @Nonnull
     @Override
-    public OWLDocumentFormat parse(@Nonnull IRI documentIRI, @Nonnull OWLOntology ontology) throws IOException {
-        return parse(documentIRI.toURI().toURL().openStream(), ontology, new OWLOntologyLoaderConfiguration());
+    public OWLDocumentFormat parse(@Nonnull IRI documentIRI, @Nonnull OWLOntology ontology) {
+    	OWLDocumentFormat docf = new BinaryOWLOntologyDocumentFormat();
+    	try {
+    		docf = parse(documentIRI.toURI().toURL().openStream(), ontology, new OWLOntologyLoaderConfiguration());
+    	} catch (MalformedURLException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+
+    	return docf;
     }
 
     @Nonnull
     @Override
     public OWLDocumentFormat parse(
-            @Nonnull OWLOntologyDocumentSource documentSource,
-            @Nonnull OWLOntology ontology,
-            @Nonnull OWLOntologyLoaderConfiguration configuration) throws IOException {
-            if (documentSource.isInputStreamAvailable()) {
-                try(InputStream is = documentSource.getInputStream()) {
-                    return parse(is, ontology, configuration);
-                }
-            }
-            else {
-                try (InputStream is = documentSource.getDocumentIRI().toURI().toURL().openStream()) {
-                    return parse(is, ontology, configuration);
-                }
-            }
+    		@Nonnull OWLOntologyDocumentSource documentSource,
+    		@Nonnull OWLOntology ontology,
+    		@Nonnull OWLOntologyLoaderConfiguration configuration) {
+    	OWLDocumentFormat docf = new BinaryOWLOntologyDocumentFormat();
+    	if (documentSource.getInputStream().isPresent()) {
+    		try(InputStream is = documentSource.getInputStream().get()) {
+    			docf = parse(is, ontology, configuration);
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+    	}
+    	else {
+    		try (InputStream is = documentSource.getDocumentIRI().toURI().toURL().openStream()) {
+    			docf = parse(is, ontology, configuration);
+    		} catch (MalformedURLException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
+    	}
+
+    	return docf;
     }
 
-    private OWLDocumentFormat parse(InputStream is, OWLOntology ontology, OWLOntologyLoaderConfiguration configuration) throws IOException, BinaryOWLParseException, UnloadableImportException  {
-        BinaryOWLOntologyDocumentSerializer serializer = new BinaryOWLOntologyDocumentSerializer();
-        final BinaryOWLOntologyBuildingHandler handler = new BinaryOWLOntologyBuildingHandler(configuration, ontology);
-        final OWLDataFactory df = ontology.getOWLOntologyManager().getOWLDataFactory();
-        serializer.read(is, handler, df);
-        return handler.getFormat();
+    private OWLDocumentFormat parse(InputStream is, OWLOntology ontology, OWLOntologyLoaderConfiguration configuration) {
+    	BinaryOWLOntologyDocumentSerializer serializer = new BinaryOWLOntologyDocumentSerializer();
+    	final BinaryOWLOntologyBuildingHandler handler = new BinaryOWLOntologyBuildingHandler(configuration, ontology);
+    	final OWLDataFactory df = ontology.getOWLOntologyManager().getOWLDataFactory();
+    	try {
+    		serializer.read(is, handler, df);
+    	} catch (BinaryOWLParseException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	} catch (UnloadableImportException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
+    	return handler.getFormat();
     }
 }
