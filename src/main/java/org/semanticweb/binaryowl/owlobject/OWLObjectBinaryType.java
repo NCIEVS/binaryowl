@@ -363,7 +363,7 @@ public class OWLObjectBinaryType<C extends OWLObject> {
         for(Method method : methods) {
             Class [] parameters = method.getParameterTypes();
             String simpleName = parameters[0].getSimpleName();
-            if(!typeValues.contains(simpleName)) {
+            if(!typeValues.contains(simpleName) && !simpleName.equalsIgnoreCase("Object")) {
                 throw new RuntimeException("BinaryOWLObjectType not defined for " + simpleName);
             }
         }
